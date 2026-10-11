@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Logout | Bandhan.com</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Segoe UI', sans-serif;
+    }
+
+    body {
+      background-color: #f8f9fc;
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .logout-container {
+      background-color: white;
+      border-radius: 12px;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+      width: 100%;
+      max-width: 450px;
+      padding: 40px;
+      text-align: center;
+      animation: fadeIn 0.5s ease-in-out;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .logout-icon {
+      font-size: 60px;
+      color: #db2777;
+      margin-bottom: 20px;
+    }
+
+    .logout-title {
+      color: #db2777;
+      font-size: 28px;
+      margin-bottom: 10px;
+    }
+
+    .logout-message {
+      color: #666;
+      font-size: 16px;
+      margin-bottom: 30px;
+    }
+
+    .logout-btn {
+      background-color: #db2777;
+      color: white;
+      border: none;
+      padding: 12px 30px;
+      border-radius: 6px;
+      font-size: 16px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background-color 0.3s;
+      margin: 10px;
+    }
+
+    .logout-btn:hover {
+      background-color: #be185d;
+    }
+
+    .login-again {
+      margin-top: 20px;
+      font-size: 14px;
+      color: #666;
+    }
+
+    .login-again a {
+      color: #db2777;
+      text-decoration: none;
+      font-weight: 500;
+    }
+
+    .login-again a:hover {
+      text-decoration: underline;
+    }
+  </style>
+</head>
+<body>
+  <div class="logout-container">
+    <div class="logout-icon">
+      <i class="fas fa-sign-out-alt"></i>
+    </div>
+    <h1 class="logout-title">You've been logged out</h1>
+    <p class="logout-message">Thank you for using Bandhan.com. Your session has been securely ended.</p>
+    
+    <button class="logout-btn" onclick="confirmLogout()">
+      <i class="fas fa-check-circle"></i> Confirm Logout
+    </button>
+    
+    <div class="login-again">
+      Changed your mind? <a href="login.html">Log in again</a>
+    </div>
+  </div>
+
+  <script>
+    function confirmLogout() {
+      // In a real application, you would:
+      // 1. Send a request to your backend to clear the session
+      // 2. Clear any client-side tokens or cookies
+      // 3. Redirect to login page
+      
+      // For this demo, we'll just redirect after a brief delay
+      setTimeout(() => {
+        window.location.href = "login.html";
+      }, 500);
+    }
+    
+    // Optional: Auto-redirect after 5 seconds
+    setTimeout(() => {
+      window.location.href = "login.html";
+    }, 5000);
+  </script>
+</body>
+</html>

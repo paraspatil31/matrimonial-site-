@@ -1,0 +1,464 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Matrimony Biodata | Bandhan.com</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      background-color: #f8f9fc;
+      margin: 0;
+      padding: 0;
+    }
+
+    header {
+      background-color: #fff;
+      padding: 15px 30px;
+      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
+    }
+
+    .site-name {
+      color: #db2777;
+      font-size: 22px;
+      font-weight: bold;
+    }
+
+    .container {
+      max-width: 800px;
+      margin: 40px auto;
+      background: #fff;
+      border-radius: 12px;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+      padding: 30px 40px;
+      border-top: 5px solid #db2777;
+    }
+
+    h1 {
+      color: #db2777;
+      text-align: center;
+      margin-bottom: 8px;
+    }
+
+    .subtitle {
+      text-align: center;
+      color: #666;
+      margin-bottom: 30px;
+    }
+
+    .section {
+      margin-bottom: 40px;
+    }
+
+    .section h2 {
+      color: #db2777;
+      font-size: 18px;
+      display: flex;
+      align-items: center;
+      margin-bottom: 20px;
+      border-bottom: 1px solid #eee;
+      padding-bottom: 10px;
+    }
+
+    .form-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 20px;
+      margin-bottom: 20px;
+    }
+
+    .form-group {
+      flex: 1;
+      min-width: 200px;
+    }
+
+    label {
+      display: block;
+      margin-bottom: 6px;
+      font-weight: 500;
+      color: #333;
+    }
+
+    input,
+    select,
+    textarea {
+      width: 100%;
+      padding: 10px;
+      border: 1px solid #ccc;
+      border-radius: 6px;
+      font-size: 15px;
+      font-family: inherit;
+      box-sizing: border-box;
+    }
+
+    textarea {
+      height: 80px;
+      resize: vertical;
+      background: #fafafa;
+      font-style: italic;
+    }
+
+    .photo-upload {
+      border: 2px dashed #db2777;
+      background: #fff0f5;
+      padding: 20px;
+      text-align: center;
+      border-radius: 6px;
+      cursor: pointer;
+      transition: background 0.3s;
+      position: relative;
+    }
+
+    .photo-upload:hover {
+      background: #ffe6f0;
+    }
+
+    .photo-upload img {
+      max-width: 150px;
+      margin-top: 10px;
+      border-radius: 5px;
+    }
+
+    .remove-img {
+      position: absolute;
+      top: 8px;
+      right: 10px;
+      background: #db2777;
+      color: white;
+      border-radius: 50%;
+      padding: 0 8px;
+      cursor: pointer;
+      font-weight: bold;
+    }
+
+    .btn-group {
+      text-align: center;
+      margin-top: 30px;
+    }
+
+    .submit-btn,
+    .reset-btn {
+      background-color: #db2777;
+      color: white;
+      font-weight: 600;
+      border: none;
+      padding: 12px 30px;
+      border-radius: 6px;
+      font-size: 16px;
+      cursor: pointer;
+      margin: 10px;
+      transition: background 0.3s;
+    }
+
+    .submit-btn:hover,
+    .reset-btn:hover {
+      background-color: #be185d;
+    }
+
+    footer {
+      background-color: #111;
+      color: #ccc;
+      padding: 30px 20px;
+      text-align: center;
+      margin-top: 60px;
+    }
+
+    footer h3 {
+      color: #fff;
+      margin-bottom: 10px;
+    }
+
+    footer p {
+      font-size: 14px;
+      margin: 5px 0;
+    }
+
+    /* Modal Styles */
+    .modal {
+      display: none;
+      position: fixed;
+      z-index: 999;
+      left: 0; top: 0;
+      width: 100%; height: 100%;
+      background-color: rgba(0,0,0,0.6);
+      justify-content: center;
+      align-items: center;
+    }
+
+    .modal-content {
+      background: white;
+      padding: 30px;
+      border-radius: 8px;
+      text-align: center;
+      box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+      max-width: 400px;
+      width: 90%;
+      position: relative;
+      animation: fadeIn 0.3s ease-in-out;
+    }
+
+    .modal-content h2 {
+      color: #db2777;
+      margin-bottom: 10px;
+    }
+
+    .modal-content p {
+      font-size: 16px;
+      color: #444;
+    }
+
+    .close-btn {
+      position: absolute;
+      top: 10px;
+      right: 15px;
+      font-size: 24px;
+      color: #999;
+      cursor: pointer;
+    }
+
+    .error-message {
+      color: #e74c3c;
+      font-size: 13px;
+      margin-top: 5px;
+      display: none;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: scale(0.9); }
+      to { opacity: 1; transform: scale(1); }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="site-name">bandhan.com</div>
+  </header>
+
+  <div class="container">
+    <h1>ADD YOUR BIODATA</h1>
+    <p class="subtitle">Complete your profile to find your perfect match</p>
+
+    <form id="biodataForm">
+      <div class="section">
+        <h2>Personal Details</h2>
+        <div class="form-row">
+          <div class="form-group">
+            <label for="name">Full Name *</label>
+            <input type="text" id="name" required />
+          </div>
+          <div class="form-group">
+            <label for="gender">Gender *</label>
+            <select id="gender" required>
+              <option value="">Select</option>
+              <option>Male</option>
+              <option>Female</option>
+              <option>Other</option>
+            </select>
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label for="dob">Date of Birth *</label>
+            <input type="date" id="dob" required />
+            <div id="ageError" class="error-message">You must be at least 21 years old to register</div>
+          </div>
+          <div class="form-group">
+            <label for="age">Age</label>
+            <input type="number" id="age" readonly />
+          </div>
+          <div class="form-group">
+            <label for="marital">Marital Status *</label>
+            <select id="marital" required>
+              <option value="">Select</option>
+              <option>Never Married</option>
+              <option>Divorced</option>
+              <option>Widowed</option>
+            </select>
+          </div>
+        </div>
+        <div class="form-group">
+          <label for="about">About Yourself</label>
+          <textarea id="about" placeholder="Tell us about your personality, interests, etc."></textarea>
+        </div>
+      </div>
+
+      <div class="section">
+        <h2>Location Details</h2>
+        <div class="form-row">
+          <div class="form-group">
+            <label for="country">Country *</label>
+            <input type="text" id="country" required />
+          </div>
+          <div class="form-group">
+            <label for="state">State *</label>
+            <input type="text" id="state" required />
+          </div>
+          <div class="form-group">
+            <label for="city">City *</label>
+            <input type="text" id="city" required />
+          </div>
+        </div>
+      </div>
+
+      <div class="section">
+        <h2>Professional Details</h2>
+        <div class="form-row">
+          <div class="form-group">
+            <label for="education">Education *</label>
+            <input type="text" id="education" required />
+          </div>
+          <div class="form-group">
+            <label for="profession">Profession *</label>
+            <input type="text" id="profession" required />
+          </div>
+          <div class="form-group">
+            <label for="income">Annual Income *</label>
+            <input type="text" id="income" required />
+          </div>
+        </div>
+      </div>
+
+      <div class="section">
+        <h2>Interests</h2>
+        <div class="form-group">
+          <label for="hobbies">Hobbies</label>
+          <textarea id="hobbies" placeholder="E.g. Reading, Traveling, Cooking"></textarea>
+        </div>
+      </div>
+
+      <div class="section">
+        <h2>Partner Preferences</h2>
+        <div class="form-row">
+          <div class="form-group">
+            <label for="prefAge">Preferred Age Range *</label>
+            <input type="text" id="prefAge" placeholder="E.g. 25-30" required />
+          </div>
+          <div class="form-group">
+            <label for="prefProfession">Preferred Profession</label>
+            <input type="text" id="prefProfession" />
+          </div>
+        </div>
+        <div class="form-group">
+          <label for="expectations">Additional Expectations</label>
+          <textarea id="expectations" placeholder="Write anything specific you expect from your partner"></textarea>
+        </div>
+      </div>
+
+      <div class="section">
+        <h2>Upload Profile Photo *</h2>
+        <input type="file" id="profilePhoto" accept="image/*" style="display: none;" required />
+        <div class="photo-upload" onclick="document.getElementById('profilePhoto').click()">
+          Click to upload profile photo (Max 5MB)
+        </div>
+      </div>
+
+      <div class="btn-group">
+        <button type="submit" class="submit-btn">Complete Profile</button>
+        <button type="reset" class="reset-btn">Reset</button>
+      </div>
+    </form>
+  </div>
+
+  <!-- Success Modal -->
+  <div id="successModal" class="modal">
+    <div class="modal-content">
+      <span class="close-btn" onclick="closeModal()">×</span>
+      <h2>🎉 Congratulations!</h2>
+      <p>Your profile has been completed successfully.</p>
+    </div>
+  </div>
+
+  <!-- Age Error Modal -->
+  <div id="ageErrorModal" class="modal">
+    <div class="modal-content">
+      <span class="close-btn" onclick="closeModal()">×</span>
+      <h2>⚠️ Age Restriction</h2>
+      <p>You must be at least 21 years old to register on our platform.</p>
+    </div>
+  </div>
+
+  <footer>
+    <h3>bandhan.com</h3>
+    <p>Your trusted partner in finding lifelong companionship.</p>
+    <p>We believe that every match is made with love, care, and destiny.</p>
+    <p>&copy; 2025 Bandhan.com. All rights reserved.</p>
+  </footer>
+
+  <script>
+    const dob = document.getElementById('dob');
+    const age = document.getElementById('age');
+    const ageError = document.getElementById('ageError');
+    const form = document.getElementById('biodataForm');
+
+    dob.addEventListener('change', () => {
+      const birth = new Date(dob.value);
+      const today = new Date();
+      let calculatedAge = today.getFullYear() - birth.getFullYear();
+      const m = today.getMonth() - birth.getMonth();
+      if (m < 0 || (m === 0 && today.getDate() < birth.getDate())) {
+        calculatedAge--;
+      }
+      age.value = calculatedAge;
+      
+      // Hide error message when date changes
+      ageError.style.display = 'none';
+    });
+
+    document.getElementById('profilePhoto').addEventListener('change', function () {
+      const file = this.files[0];
+      const uploadDiv = document.querySelector('.photo-upload');
+      if (file && file.size <= 5 * 1024 * 1024) {
+        const reader = new FileReader();
+        reader.onload = function (e) {
+          uploadDiv.innerHTML = `
+            <span class="remove-img" onclick="removePhoto()">×</span>
+            <img src="${e.target.result}" alt="Profile Preview">
+          `;
+        };
+        reader.readAsDataURL(file);
+      } else {
+        alert("File too large (Max 5MB)");
+      }
+    });
+
+    function removePhoto() {
+      const uploadDiv = document.querySelector('.photo-upload');
+      document.getElementById('profilePhoto').value = '';
+      uploadDiv.innerHTML = 'Click to upload profile photo (Max 5MB)';
+    }
+
+    function closeModal() {
+      document.getElementById('successModal').style.display = 'none';
+      document.getElementById('ageErrorModal').style.display = 'none';
+    }
+
+    window.onclick = function(event) {
+      if (event.target.classList.contains('modal')) {
+        closeModal();
+      }
+    }
+
+    form.addEventListener('submit', function (e) {
+      e.preventDefault();
+      
+      // Get age value
+      const userAge = parseInt(age.value);
+      
+      // Validate age (minimum 21 years)
+      if (userAge < 21) {
+        ageError.style.display = 'block';
+        document.getElementById('ageErrorModal').style.display = 'flex';
+        return false;
+      }
+      
+      // If validation passes
+      document.getElementById('successModal').style.display = 'flex';
+
+      // Redirect after 3 seconds
+      setTimeout(() => {
+        window.location.href = "dashboard.html"; // Change to your actual page
+      }, 3000);
+    });
+  </script>
+</body>
+</html>

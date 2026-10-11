@@ -1,0 +1,905 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Potential Matches | Bandhan.com</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Segoe UI', sans-serif;
+    }
+
+    body {
+      display: flex;
+      min-height: 100vh;
+      background-color: #f8f9fc;
+    }
+
+    .sidebar {
+      width: 250px;
+      background-color: #db2777;
+      color: white;
+      padding: 30px 20px;
+    }
+
+    .sidebar h2 {
+      font-size: 24px;
+      margin-bottom: 40px;
+    }
+
+    .sidebar ul {
+      list-style: none;
+    }
+
+    .sidebar ul li {
+      margin-bottom: 20px;
+      position: relative;
+    }
+
+    .sidebar ul li a {
+      color: white;
+      text-decoration: none;
+      font-weight: 500;
+      display: flex;
+      align-items: center;
+      transition: 0.3s;
+    }
+
+    .sidebar ul li a i {
+      margin-right: 10px;
+      font-size: 18px;
+    }
+
+    .sidebar ul li a:hover {
+      text-decoration: underline;
+    }
+
+    .sidebar ul li.active a {
+      font-weight: 600;
+    }
+
+    .sidebar ul li.active a::before {
+      content: '';
+      position: absolute;
+      left: -20px;
+      width: 4px;
+      height: 100%;
+      background-color: white;
+    }
+
+    .main {
+      flex: 1;
+      padding: 30px;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .page-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 30px;
+    }
+
+    .page-title {
+      color: #db2777;
+      font-size: 28px;
+    }
+
+    .refresh-btn {
+      background-color: #db2777;
+      color: white;
+      border: none;
+      padding: 10px 20px;
+      border-radius: 6px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .refresh-btn:hover {
+      background-color: #be185d;
+    }
+
+    .matches-container {
+      display: flex;
+      gap: 30px;
+      flex: 1;
+    }
+
+    .user-profile {
+      width: 350px;
+      background: white;
+      border-radius: 10px;
+      box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
+      padding: 25px;
+      height: fit-content;
+      position: sticky;
+      top: 30px;
+    }
+
+    .user-header {
+      display: flex;
+      align-items: center;
+      gap: 20px;
+      margin-bottom: 20px;
+    }
+
+    .user-avatar {
+      width: 80px;
+      height: 80px;
+      border-radius: 50%;
+      object-fit: cover;
+      border: 3px solid #f8f9fc;
+    }
+
+    .user-name {
+      color: #db2777;
+      font-size: 22px;
+      margin-bottom: 5px;
+    }
+
+    .user-details {
+      color: #666;
+      font-size: 14px;
+    }
+
+    .user-section {
+      margin-bottom: 20px;
+    }
+
+    .section-title {
+      color: #db2777;
+      font-size: 16px;
+      margin-bottom: 10px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .detail-item {
+      display: flex;
+      margin-bottom: 8px;
+    }
+
+    .detail-label {
+      font-weight: 500;
+      width: 120px;
+      color: #555;
+    }
+
+    .detail-value {
+      flex: 1;
+      color: #333;
+    }
+
+    .matches-list {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+    }
+
+    .match-card {
+      background: white;
+      border-radius: 10px;
+      box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
+      padding: 20px;
+      transition: all 0.3s;
+    }
+
+    .match-card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 5px 20px rgba(0, 0, 0, 0.15);
+    }
+
+    .match-header {
+      display: flex;
+      align-items: center;
+      gap: 15px;
+      margin-bottom: 15px;
+    }
+
+    .match-avatar {
+      width: 70px;
+      height: 70px;
+      border-radius: 50%;
+      object-fit: cover;
+      border: 3px solid #f8f9fc;
+    }
+
+    .match-name {
+      color: #db2777;
+      font-size: 20px;
+      margin-bottom: 5px;
+    }
+
+    .match-basic {
+      color: #666;
+      font-size: 14px;
+    }
+
+    .match-details {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 15px;
+      margin-bottom: 15px;
+    }
+
+    .match-points {
+      background-color: #f8f9fc;
+      padding: 15px;
+      border-radius: 8px;
+      margin-top: 15px;
+    }
+
+    .match-points-title {
+      color: #db2777;
+      font-size: 15px;
+      margin-bottom: 10px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .match-points-list {
+      list-style-type: none;
+    }
+
+    .match-points-list li {
+      margin-bottom: 8px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      color: #555;
+    }
+
+    .match-points-list li i {
+      color: #db2777;
+    }
+
+    .match-actions {
+      display: flex;
+      gap: 15px;
+      margin-top: 20px;
+    }
+
+    .match-btn {
+      padding: 8px 20px;
+      border-radius: 20px;
+      font-size: 14px;
+      font-weight: 500;
+      cursor: pointer;
+      transition: all 0.3s;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .share-contact-btn {
+      background-color: #db2777;
+      color: white;
+      border: none;
+    }
+
+    .share-contact-btn:hover {
+      background-color: #be185d;
+    }
+
+    .calculate-btn {
+      background-color: white;
+      color: #db2777;
+      border: 1px solid #db2777;
+    }
+
+    .calculate-btn:hover {
+      background-color: #f8f9fc;
+    }
+
+    .compatibility-result {
+      background-color: #e6f7e6;
+      padding: 15px;
+      border-radius: 8px;
+      margin-top: 20px;
+      display: none;
+    }
+
+    .compatibility-percentage {
+      font-size: 24px;
+      font-weight: bold;
+      color: #28a745;
+      margin-bottom: 10px;
+      text-align: center;
+    }
+
+    .compatibility-message {
+      font-size: 16px;
+      color: #28a745;
+      margin-bottom: 10px;
+      text-align: center;
+    }
+
+    .compatibility-details {
+      text-align: left;
+      margin-top: 10px;
+    }
+
+    .compatibility-item {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 8px;
+      padding-bottom: 8px;
+      border-bottom: 1px solid #d4edda;
+    }
+
+    .compatibility-category {
+      font-weight: 500;
+      color: #555;
+    }
+
+    .compatibility-score {
+      font-weight: 600;
+      color: #28a745;
+    }
+
+    /* Share Contact Modal */
+    .modal {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: rgba(0, 0, 0, 0.5);
+      display: none;
+      justify-content: center;
+      align-items: center;
+      z-index: 100;
+    }
+
+    .modal-content {
+      background: white;
+      padding: 30px;
+      border-radius: 10px;
+      width: 500px;
+      max-width: 90%;
+      position: relative;
+    }
+
+    .close-btn {
+      position: absolute;
+      top: 15px;
+      right: 15px;
+      font-size: 20px;
+      cursor: pointer;
+      color: #333;
+    }
+
+    .modal-title {
+      color: #db2777;
+      margin-bottom: 20px;
+      text-align: center;
+    }
+
+    .form-group {
+      margin-bottom: 20px;
+    }
+
+    .form-group label {
+      display: block;
+      margin-bottom: 8px;
+      font-weight: 500;
+      color: #555;
+    }
+
+    .form-group input {
+      width: 100%;
+      padding: 12px;
+      border: 1px solid #ddd;
+      border-radius: 6px;
+      font-size: 15px;
+      transition: border-color 0.3s;
+    }
+
+    .form-group input:focus {
+      border-color: #db2777;
+      outline: none;
+      box-shadow: 0 0 0 2px rgba(219, 39, 119, 0.2);
+    }
+
+    .form-group textarea {
+      width: 100%;
+      padding: 12px;
+      border: 1px solid #ddd;
+      border-radius: 6px;
+      font-size: 15px;
+      min-height: 100px;
+      resize: vertical;
+      transition: border-color 0.3s;
+    }
+
+    .form-group textarea:focus {
+      border-color: #db2777;
+      outline: none;
+      box-shadow: 0 0 0 2px rgba(219, 39, 119, 0.2);
+    }
+
+    .input-error {
+      border-color: #dc3545 !important;
+    }
+
+    .error-message {
+      color: #dc3545;
+      font-size: 13px;
+      margin-top: 5px;
+      display: none;
+    }
+
+    .share-options {
+      margin: 20px 0;
+    }
+
+    .share-option {
+      display: flex;
+      align-items: center;
+      margin-bottom: 10px;
+    }
+
+    .share-option input {
+      margin-right: 10px;
+    }
+
+    .submit-btn {
+      background-color: #db2777;
+      color: white;
+      border: none;
+      padding: 12px 20px;
+      border-radius: 6px;
+      font-weight: 500;
+      cursor: pointer;
+      width: 100%;
+      font-size: 16px;
+      transition: background-color 0.3s;
+    }
+
+    .submit-btn:hover {
+      background-color: #be185d;
+    }
+
+    @media (max-width: 1200px) {
+      .matches-container {
+        flex-direction: column;
+      }
+
+      .user-profile {
+        width: 100%;
+        position: static;
+      }
+    }
+
+    @media (max-width: 768px) {
+      body {
+        flex-direction: column;
+      }
+      .sidebar {
+        width: 100%;
+        padding: 20px;
+      }
+      .sidebar ul {
+        display: flex;
+        justify-content: space-between;
+        flex-wrap: wrap;
+      }
+      .sidebar ul li {
+        margin-bottom: 15px;
+      }
+      .sidebar ul li.active a::before {
+        display: none;
+      }
+
+      .match-header {
+        flex-direction: column;
+        text-align: center;
+      }
+
+      .match-actions {
+        justify-content: center;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="sidebar">
+    <h2>Bandhan.com</h2>
+    <ul>
+      <li><a href="dashboard.html"><i class="fas fa-home"></i> Dashboard</a></li>
+      <li class="active"><a href="profilematches.html"><i class="fas fa-search"></i> Potential Matches</a></li>
+      <li><a href="logout.html"><i class="fas fa-sign-out-alt"></i> Logout</a></li>
+    </ul>
+  </div>
+
+  <div class="main">
+    <div class="page-header">
+      <h1 class="page-title">Potential Matches</h1>
+      <button class="refresh-btn" onclick="refreshMatches()">
+        <i class="fas fa-sync-alt"></i> Refresh Matches
+      </button>
+    </div>
+
+    <div class="matches-container">
+      <!-- User Profile Section -->
+      <div class="user-profile">
+        <div class="user-header">
+          <img src="https://images.pexels.com/photos/415829/pexels-photo-415829.jpeg" alt="User" class="user-avatar">
+          <div>
+            <h2 class="user-name">Priya Sharma</h2>
+            <p class="user-details">28 yrs, 5'4" | Doctor | Mumbai</p>
+          </div>
+        </div>
+
+        <div class="user-section">
+          <h3 class="section-title"><i class="fas fa-graduation-cap"></i> Education</h3>
+          <div class="detail-item">
+            <span class="detail-label">Highest Degree:</span>
+            <span class="detail-value">MBBS, MD</span>
+          </div>
+          <div class="detail-item">
+            <span class="detail-label">College:</span>
+            <span class="detail-value">Grant Medical College</span>
+          </div>
+        </div>
+
+        <div class="user-section">
+          <h3 class="section-title"><i class="fas fa-briefcase"></i> Professional</h3>
+          <div class="detail-item">
+            <span class="detail-label">Profession:</span>
+            <span class="detail-value">Doctor</span>
+          </div>
+          <div class="detail-item">
+            <span class="detail-label">Income:</span>
+            <span class="detail-value">₹18 LPA</span>
+          </div>
+        </div>
+
+        <div class="user-section">
+          <h3 class="section-title"><i class="fas fa-heart"></i> Preferences</h3>
+          <div class="detail-item">
+            <span class="detail-label">Age Range:</span>
+            <span class="detail-value">28-35 years</span>
+          </div>
+          <div class="detail-item">
+            <span class="detail-label">Education:</span>
+            <span class="detail-value">Graduate or above</span>
+          </div>
+          <div class="detail-item">
+            <span class="detail-label">Location:</span>
+            <span class="detail-value">Maharashtra</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Matches List Section -->
+      <div class="matches-list" id="matchesList">
+        <!-- Match cards will be loaded here by JavaScript -->
+      </div>
+    </div>
+  </div>
+
+  <!-- Share Contact Modal -->
+  <div class="modal" id="shareContactModal">
+    <div class="modal-content">
+      <span class="close-btn" onclick="closeModal('shareContactModal')">×</span>
+      <h3 class="modal-title">Share Your Contact Information</h3>
+      
+      <div class="form-group">
+        <label for="userEmail">Your Email Address</label>
+        <input type="email" id="userEmail" placeholder="Enter your email address">
+        <div class="error-message" id="emailError">Please enter a valid email address (must contain @)</div>
+      </div>
+      
+      <div class="form-group">
+        <label for="userPhone">Your Phone Number</label>
+        <input type="tel" id="userPhone" placeholder="Enter your 10-digit phone number" maxlength="10">
+        <div class="error-message" id="phoneError">Please enter a valid 10-digit phone number</div>
+      </div>
+      
+      <div class="form-group">
+        <label for="additionalMessage">Additional Message (Optional)</label>
+        <textarea id="additionalMessage" placeholder="Add any additional information you'd like to share"></textarea>
+      </div>
+      
+      <div class="share-options">
+        <h4>Share With:</h4>
+        <div class="share-option">
+          <input type="checkbox" id="shareEmail" checked>
+          <label for="shareEmail">Email Address</label>
+        </div>
+        <div class="share-option">
+          <input type="checkbox" id="sharePhone" checked>
+          <label for="sharePhone">Phone Number</label>
+        </div>
+        <div class="share-option">
+          <input type="checkbox" id="shareMessage">
+          <label for="shareMessage">Additional Message</label>
+        </div>
+      </div>
+      
+      <button class="submit-btn" onclick="validateAndShareContact()">
+        Share Contact Information
+      </button>
+    </div>
+  </div>
+
+  <script>
+    // User data (female in this case)
+    const currentUser = {
+      name: "Priya Sharma",
+      gender: "female",
+      age: 28,
+      profession: "Doctor",
+      location: "Mumbai",
+      preferences: {
+        minAge: 28,
+        maxAge: 35,
+        education: "Graduate or above",
+        location: "Maharashtra"
+      }
+    };
+
+    // Sample male profiles data
+    const maleProfiles = [
+      {
+        id: "profile1",
+        name: "Rahul Deshpande",
+        gender: "male",
+        age: 30,
+        height: "5'10\"",
+        profession: "Software Engineer",
+        location: "Pune",
+        image: "https://images.pexels.com/photos/2379004/pexels-photo-2379004.jpeg",
+        education: "M.Tech in Computer Science",
+        income: "₹15 LPA",
+        caste: "Brahman",
+        points: [
+          "Stable career in technology field",
+          "Similar educational background",
+          "Compatible age difference",
+          "Both from Maharashtra with similar cultural values"
+        ],
+        compatibility: {
+          percentage: "85%",
+          message: "Excellent Match! You share many common interests and values.",
+          details: [
+            { category: "Education Compatibility", score: "90%" },
+            { category: "Professional Compatibility", score: "85%" },
+            { category: "Lifestyle Compatibility", score: "80%" },
+            { category: "Family Values", score: "90%" }
+          ]
+        }
+      },
+      {
+        id: "profile2",
+        name: "Amit Patil",
+        gender: "male",
+        age: 32,
+        height: "5'11\"",
+        profession: "Chartered Accountant",
+        location: "Mumbai",
+        image: "https://images.pexels.com/photos/1043474/pexels-photo-1043474.jpeg",
+        education: "CA",
+        income: "₹20 LPA",
+        caste: "Maratha",
+        points: [
+          "Complementary professional fields",
+          "Stable financial background",
+          "Similar family values",
+          "Shared interest in travel and music"
+        ],
+        compatibility: {
+          percentage: "82%",
+          message: "Very Good Match! You complement each other well.",
+          details: [
+            { category: "Education Compatibility", score: "85%" },
+            { category: "Professional Compatibility", score: "88%" },
+            { category: "Lifestyle Compatibility", score: "80%" },
+            { category: "Family Values", score: "85%" }
+          ]
+        }
+      }
+    ];
+
+    let currentSharingProfile = null;
+
+    function calculateCompatibility(button) {
+      const card = button.closest('.match-card');
+      const result = card.querySelector('.compatibility-result');
+      result.style.display = 'block';
+      result.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+    }
+
+    function showShareContactModal(profileId, profileName) {
+      currentSharingProfile = { id: profileId, name: profileName };
+      // Clear previous inputs and errors
+      document.getElementById('userEmail').value = '';
+      document.getElementById('userPhone').value = '';
+      document.getElementById('additionalMessage').value = '';
+      document.getElementById('emailError').style.display = 'none';
+      document.getElementById('phoneError').style.display = 'none';
+      document.getElementById('userEmail').classList.remove('input-error');
+      document.getElementById('userPhone').classList.remove('input-error');
+      
+      document.getElementById('shareContactModal').style.display = 'flex';
+    }
+
+    function validateAndShareContact() {
+      const shareEmail = document.getElementById('shareEmail').checked;
+      const sharePhone = document.getElementById('sharePhone').checked;
+      const shareMessage = document.getElementById('shareMessage').checked;
+      const profile = currentSharingProfile;
+      
+      const email = document.getElementById('userEmail').value.trim();
+      const phone = document.getElementById('userPhone').value.trim();
+      const message = document.getElementById('additionalMessage').value.trim();
+      
+      let isValid = true;
+      
+      // Email validation
+      if (shareEmail) {
+        if (!email || !email.includes('@')) {
+          document.getElementById('emailError').style.display = 'block';
+          document.getElementById('userEmail').classList.add('input-error');
+          isValid = false;
+        } else {
+          document.getElementById('emailError').style.display = 'none';
+          document.getElementById('userEmail').classList.remove('input-error');
+        }
+      }
+      
+      // Phone validation
+      if (sharePhone) {
+        if (!phone || phone.length !== 10 || isNaN(phone)) {
+          document.getElementById('phoneError').style.display = 'block';
+          document.getElementById('userPhone').classList.add('input-error');
+          isValid = false;
+        } else {
+          document.getElementById('phoneError').style.display = 'none';
+          document.getElementById('userPhone').classList.remove('input-error');
+        }
+      }
+      
+      if (!isValid) {
+        return;
+      }
+      
+      // In a real app, you would send this to your backend
+      console.log(`Sharing contact with ${profile.name} (ID: ${profile.id}):`, {
+        email: shareEmail ? email : null,
+        phone: sharePhone ? phone : null,
+        message: shareMessage ? message : null
+      });
+      
+      alert(`Your contact information has been shared with ${profile.name}`);
+      closeModal('shareContactModal');
+      
+      // Update the button to show shared status
+      const buttons = document.querySelectorAll(`button[data-profile-id="${profile.id}"]`);
+      buttons.forEach(btn => {
+        btn.innerHTML = '<i class="fas fa-check-circle"></i> Contact Shared';
+        btn.style.backgroundColor = '#28a745';
+        btn.onclick = null; // Remove the click handler
+      });
+    }
+
+    function closeModal(modalId) {
+      document.getElementById(modalId).style.display = 'none';
+    }
+
+    // Close modal when clicking outside
+    window.onclick = function(event) {
+      if (event.target.classList.contains('modal')) {
+        closeModal('shareContactModal');
+      }
+    }
+
+    // Restrict phone input to numbers only
+    document.addEventListener('DOMContentLoaded', function() {
+      const phoneInput = document.getElementById('userPhone');
+      if (phoneInput) {
+        phoneInput.addEventListener('input', function() {
+          this.value = this.value.replace(/\D/g, ''); // Remove non-digit characters
+          if (this.value.length > 10) {
+            this.value = this.value.slice(0, 10); // Limit to 10 digits
+          }
+        });
+      }
+    });
+
+    function refreshMatches() {
+      const matchesList = document.getElementById('matchesList');
+      matchesList.innerHTML = '';
+      
+      const profilesToShow = currentUser.gender === 'female' ? maleProfiles : [];
+      const shuffledProfiles = [...profilesToShow].sort(() => 0.5 - Math.random());
+      const selectedProfiles = shuffledProfiles.slice(0, 2); // Show 2 matches
+      
+      selectedProfiles.forEach(profile => {
+        const matchCard = document.createElement('div');
+        matchCard.className = 'match-card';
+        matchCard.innerHTML = `
+          <div class="match-header">
+            <img src="${profile.image}" alt="Match" class="match-avatar">
+            <div>
+              <h3 class="match-name">${profile.name}</h3>
+              <p class="match-basic">${profile.age} yrs, ${profile.height} | ${profile.profession} | ${profile.location}</p>
+            </div>
+          </div>
+
+          <div class="match-details">
+            <div>
+              <div class="detail-item">
+                <span class="detail-label">Education:</span>
+                <span class="detail-value">${profile.education}</span>
+              </div>
+              <div class="detail-item">
+                <span class="detail-label">Profession:</span>
+                <span class="detail-value">${profile.profession}</span>
+              </div>
+            </div>
+            <div>
+              <div class="detail-item">
+                <span class="detail-label">Income:</span>
+                <span class="detail-value">${profile.income}</span>
+              </div>
+              <div class="detail-item">
+                <span class="detail-label">Caste:</span>
+                <span class="detail-value">${profile.caste}</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="match-points">
+            <h4 class="match-points-title"><i class="fas fa-heart"></i> Why you might be compatible</h4>
+            <ul class="match-points-list">
+              ${profile.points.map(point => `<li><i class="fas fa-check"></i> ${point}</li>`).join('')}
+            </ul>
+          </div>
+
+          <div class="match-actions">
+            <button class="match-btn share-contact-btn" 
+                    onclick="showShareContactModal('${profile.id}', '${profile.name}')"
+                    data-profile-id="${profile.id}">
+              <i class="fas fa-share-alt"></i> Share Contact
+            </button>
+            <button class="match-btn calculate-btn" onclick="calculateCompatibility(this)">
+              <i class="fas fa-calculator"></i> Calculate Compatibility
+            </button>
+          </div>
+          
+          <div class="compatibility-result">
+            <div class="compatibility-percentage">${profile.compatibility.percentage}</div>
+            <div class="compatibility-message">${profile.compatibility.message}</div>
+            <div class="compatibility-details">
+              ${profile.compatibility.details.map(detail => `
+                <div class="compatibility-item">
+                  <span class="compatibility-category">${detail.category}:</span>
+                  <span class="compatibility-score">${detail.score}</span>
+                </div>
+              `).join('')}
+            </div>
+          </div>
+        `;
+        matchesList.appendChild(matchCard);
+      });
+    }
+
+    // Load initial matches when page loads
+    window.onload = refreshMatches;
+  </script>
+</body>
+</html>

@@ -1,0 +1,695 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>User Profile | Bandhan.com</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Segoe UI', sans-serif;
+    }
+
+    body {
+      display: flex;
+      min-height: 100vh;
+      background-color: #f8f9fc;
+    }
+
+    .sidebar {
+      width: 250px;
+      background-color: #db2777;
+      color: white;
+      padding: 30px 20px;
+    }
+
+    .sidebar h2 {
+      font-size: 24px;
+      margin-bottom: 40px;
+    }
+
+    .sidebar ul {
+      list-style: none;
+    }
+
+    .sidebar ul li {
+      margin-bottom: 20px;
+      position: relative;
+    }
+
+    .sidebar ul li a {
+      color: white;
+      text-decoration: none;
+      font-weight: 500;
+      display: flex;
+      align-items: center;
+      transition: 0.3s;
+    }
+
+    .sidebar ul li a i {
+      margin-right: 10px;
+      font-size: 18px;
+    }
+
+    .sidebar ul li a:hover {
+      text-decoration: underline;
+    }
+
+    .sidebar ul li.active a {
+      font-weight: 600;
+    }
+
+    .sidebar ul li.active a::before {
+      content: '';
+      position: absolute;
+      left: -20px;
+      width: 4px;
+      height: 100%;
+      background-color: white;
+    }
+
+    .main {
+      flex: 1;
+      padding: 30px;
+    }
+
+    .profile-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 30px;
+    }
+
+    .profile-header h1 {
+      color: #db2777;
+      font-size: 28px;
+    }
+
+    .toggle-btn {
+      background-color: #db2777;
+      color: white;
+      border: none;
+      padding: 10px 20px;
+      border-radius: 6px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .toggle-btn:hover {
+      background-color: #be185d;
+    }
+
+    .profile-container {
+      background: white;
+      border-radius: 10px;
+      box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
+      padding: 30px;
+    }
+
+    /* View Profile Styles */
+    .view-profile {
+      display: block;
+    }
+
+    .profile-display {
+      display: flex;
+      gap: 30px;
+    }
+
+    .profile-image {
+      width: 200px;
+      height: 250px;
+      object-fit: cover;
+      border-radius: 8px;
+      border: 3px solid #f8f9fc;
+    }
+
+    .profile-info {
+      flex: 1;
+    }
+
+    .profile-info h2 {
+      color: #db2777;
+      font-size: 24px;
+      margin-bottom: 10px;
+    }
+
+    .profile-info p {
+      font-size: 16px;
+      color: #555;
+      margin-bottom: 8px;
+    }
+
+    .profile-details {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 15px;
+      margin-top: 20px;
+    }
+
+    .detail-card {
+      background-color: #f8f9fc;
+      padding: 15px;
+      border-radius: 8px;
+    }
+
+    .detail-card h3 {
+      color: #db2777;
+      font-size: 16px;
+      margin-bottom: 8px;
+    }
+
+    /* Edit Profile Styles */
+    .edit-profile {
+      display: none;
+    }
+
+    .edit-form {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 20px;
+    }
+
+    .form-group {
+      margin-bottom: 15px;
+    }
+
+    .form-group label {
+      display: block;
+      margin-bottom: 5px;
+      font-weight: 500;
+      color: #555;
+    }
+
+    .form-group input,
+    .form-group select,
+    .form-group textarea {
+      width: 100%;
+      padding: 10px;
+      border: 1px solid #ddd;
+      border-radius: 6px;
+      font-size: 14px;
+    }
+
+    .form-group textarea {
+      height: 100px;
+      resize: vertical;
+    }
+
+    .full-width {
+      grid-column: span 2;
+    }
+
+    .form-actions {
+      grid-column: span 2;
+      display: flex;
+      justify-content: flex-end;
+      gap: 15px;
+      margin-top: 20px;
+    }
+
+    .save-btn {
+      background-color: #db2777;
+      color: white;
+      border: none;
+      padding: 10px 25px;
+      border-radius: 6px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s;
+    }
+
+    .save-btn:hover {
+      background-color: #be185d;
+    }
+
+    .cancel-btn {
+      background-color: white;
+      color: #666;
+      border: 1px solid #ddd;
+      padding: 10px 25px;
+      border-radius: 6px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s;
+    }
+
+    .cancel-btn:hover {
+      background-color: #f8f9fc;
+    }
+
+    @media (max-width: 768px) {
+      body {
+        flex-direction: column;
+      }
+      .sidebar {
+        width: 100%;
+        padding: 20px;
+      }
+      .sidebar ul {
+        display: flex;
+        justify-content: space-between;
+        flex-wrap: wrap;
+      }
+      .sidebar ul li {
+        margin-bottom: 15px;
+      }
+      .sidebar ul li.active a::before {
+        display: none;
+      }
+      .profile-display {
+        flex-direction: column;
+      }
+      .profile-image {
+        width: 100%;
+        height: 300px;
+      }
+      .profile-details {
+        grid-template-columns: 1fr;
+      }
+      .edit-form {
+        grid-template-columns: 1fr;
+      }
+      .full-width, .form-actions {
+        grid-column: span 1;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="sidebar">
+    <h2>Bandhan.com</h2>
+    <ul>
+	  <li><a href="dashboard.html"><i class="fas fa-home"></i> Dashboard</a></li>
+      <li><a href="#"><i class="fas fa-sign-out-alt"></i> Logout</a></li>
+    </ul>
+  </div>
+
+  <div class="main">
+    <div class="profile-header">
+      <h1>My Profile</h1>
+      <button class="toggle-btn" id="toggleEdit">
+        <i class="fas fa-edit"></i> Edit Profile
+      </button>
+    </div>
+
+    <div class="profile-container">
+      <!-- View Profile Section -->
+      <div class="view-profile" id="viewProfile">
+        <div class="profile-display">
+          <img src="#" alt="Profile Picture" class="profile-image" id="viewProfileImage">
+          <div class="profile-info">
+            <h2 id="viewFullName">Loading...</h2>
+            <p><strong>Age:</strong> <span id="viewAge">Loading...</span></p>
+            <p><strong>Location:</strong> <span id="viewLocation">Loading...</span></p>
+            <p><strong>Religion:</strong> <span id="viewReligion">Loading...</span></p>
+            <p><strong>Profession:</strong> <span id="viewProfession">Loading...</span></p>
+            
+            <div class="profile-details">
+              <div class="detail-card">
+                <h3>Basic Information</h3>
+                <p><strong>Gender:</strong> <span id="viewGender">Loading...</span></p>
+                <p><strong>Date of Birth:</strong> <span id="viewDob">Loading...</span></p>
+                <p><strong>Height:</strong> <span id="viewHeight">Loading...</span></p>
+                <p><strong>Marital Status:</strong> <span id="viewMaritalStatus">Loading...</span></p>
+                <p><strong>Mother Tongue:</strong> <span id="viewMotherTongue">Loading...</span></p>
+              </div>
+              
+              <div class="detail-card">
+                <h3>Education & Career</h3>
+                <p><strong>Education:</strong> <span id="viewEducation">Loading...</span></p>
+                <p><strong>Profession:</strong> <span id="viewProfession">Loading...</span></p>
+                <p><strong>Annual Income:</strong> <span id="viewIncome">Loading...</span></p>
+              </div>
+              
+              <div class="detail-card">
+                <h3>Location Details</h3>
+                <p><strong>Country:</strong> <span id="viewCountry">Loading...</span></p>
+                <p><strong>State:</strong> <span id="viewState">Loading...</span></p>
+                <p><strong>City:</strong> <span id="viewCity">Loading...</span></p>
+              </div>
+              
+              <div class="detail-card">
+                <h3>Interests & Preferences</h3>
+                <p><strong>Hobbies:</strong> <span id="viewHobbies">Loading...</span></p>
+                <p><strong>Preferred Age Range:</strong> <span id="viewPrefAge">Loading...</span></p>
+                <p><strong>Preferred Profession:</strong> <span id="viewPrefProfession">Loading...</span></p>
+                <p><strong>Expectations:</strong> <span id="viewExpectations">Loading...</span></p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Edit Profile Section -->
+      <div class="edit-profile" id="editProfile">
+        <form class="edit-form" id="profileForm">
+          <div class="form-group full-width">
+            <label for="profilePhoto">Profile Photo</label>
+            <input type="file" id="profilePhoto" accept="image/*">
+          </div>
+          
+          <div class="form-group">
+            <label for="fullName">Full Name *</label>
+            <input type="text" id="fullName" required>
+          </div>
+          
+          <div class="form-group">
+            <label for="gender">Gender *</label>
+            <select id="gender" required>
+              <option value="">Select</option>
+              <option>Male</option>
+              <option>Female</option>
+              <option>Other</option>
+            </select>
+          </div>
+          
+          <div class="form-group">
+            <label for="dob">Date of Birth *</label>
+            <input type="date" id="dob" required>
+          </div>
+          
+          <div class="form-group">
+            <label for="age">Age</label>
+            <input type="number" id="age" readonly>
+          </div>
+          
+          <div class="form-group">
+            <label for="maritalStatus">Marital Status *</label>
+            <select id="maritalStatus" required>
+              <option value="">Select</option>
+              <option>Never Married</option>
+              <option>Divorced</option>
+              <option>Widowed</option>
+            </select>
+          </div>
+          
+          <div class="form-group">
+            <label for="height">Height</label>
+            <input type="text" id="height" placeholder="E.g. 5'4"">
+          </div>
+          
+          <div class="form-group">
+            <label for="religion">Religion</label>
+            <select id="religion">
+              <option value="">Select</option>
+              <option>Hindu</option>
+              <option>Muslim</option>
+              <option>Christian</option>
+              <option>Sikh</option>
+              <option>Other</option>
+            </select>
+          </div>
+          
+          <div class="form-group">
+            <label for="motherTongue">Mother Tongue</label>
+            <input type="text" id="motherTongue">
+          </div>
+          
+          <div class="form-group">
+            <label for="education">Education *</label>
+            <input type="text" id="education" required>
+          </div>
+          
+          <div class="form-group">
+            <label for="profession">Profession *</label>
+            <input type="text" id="profession" required>
+          </div>
+          
+          <div class="form-group">
+            <label for="income">Annual Income *</label>
+            <input type="text" id="income" required>
+          </div>
+          
+          <div class="form-group">
+            <label for="country">Country *</label>
+            <input type="text" id="country" required>
+          </div>
+          
+          <div class="form-group">
+            <label for="state">State *</label>
+            <input type="text" id="state" required>
+          </div>
+          
+          <div class="form-group">
+            <label for="city">City *</label>
+            <input type="text" id="city" required>
+          </div>
+          
+          <div class="form-group full-width">
+            <label for="about">About Yourself</label>
+            <textarea id="about" placeholder="Tell us about your personality, interests, etc."></textarea>
+          </div>
+          
+          <div class="form-group full-width">
+            <label for="hobbies">Hobbies</label>
+            <textarea id="hobbies" placeholder="E.g. Reading, Traveling, Cooking"></textarea>
+          </div>
+          
+          <div class="form-group">
+            <label for="prefAge">Preferred Age Range *</label>
+            <input type="text" id="prefAge" placeholder="E.g. 25-30" required>
+          </div>
+          
+          <div class="form-group">
+            <label for="prefProfession">Preferred Profession</label>
+            <input type="text" id="prefProfession">
+          </div>
+          
+          <div class="form-group full-width">
+            <label for="expectations">Additional Expectations</label>
+            <textarea id="expectations" placeholder="Write anything specific you expect from your partner"></textarea>
+          </div>
+          
+          <div class="form-actions">
+            <button type="button" class="cancel-btn" id="cancelEdit">Cancel</button>
+            <button type="submit" class="save-btn">Save Changes</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // DOM Elements
+    const toggleEditBtn = document.getElementById('toggleEdit');
+    const viewProfile = document.getElementById('viewProfile');
+    const editProfile = document.getElementById('editProfile');
+    const cancelEditBtn = document.getElementById('cancelEdit');
+    const profileForm = document.getElementById('profileForm');
+    const dobInput = document.getElementById('dob');
+    const ageInput = document.getElementById('age');
+    
+    // View Profile Elements
+    const viewProfileImage = document.getElementById('viewProfileImage');
+    const viewFullName = document.getElementById('viewFullName');
+    const viewAge = document.getElementById('viewAge');
+    const viewLocation = document.getElementById('viewLocation');
+    const viewReligion = document.getElementById('viewReligion');
+    const viewProfession = document.getElementById('viewProfession');
+    const viewGender = document.getElementById('viewGender');
+    const viewDob = document.getElementById('viewDob');
+    const viewHeight = document.getElementById('viewHeight');
+    const viewMaritalStatus = document.getElementById('viewMaritalStatus');
+    const viewMotherTongue = document.getElementById('viewMotherTongue');
+    const viewEducation = document.getElementById('viewEducation');
+    const viewIncome = document.getElementById('viewIncome');
+    const viewCountry = document.getElementById('viewCountry');
+    const viewState = document.getElementById('viewState');
+    const viewCity = document.getElementById('viewCity');
+    const viewHobbies = document.getElementById('viewHobbies');
+    const viewPrefAge = document.getElementById('viewPrefAge');
+    const viewPrefProfession = document.getElementById('viewPrefProfession');
+    const viewExpectations = document.getElementById('viewExpectations');
+    
+    // Edit Profile Elements
+    const fullNameInput = document.getElementById('fullName');
+    const genderInput = document.getElementById('gender');
+    const maritalStatusInput = document.getElementById('maritalStatus');
+    const heightInput = document.getElementById('height');
+    const religionInput = document.getElementById('religion');
+    const motherTongueInput = document.getElementById('motherTongue');
+    const educationInput = document.getElementById('education');
+    const professionInput = document.getElementById('profession');
+    const incomeInput = document.getElementById('income');
+    const countryInput = document.getElementById('country');
+    const stateInput = document.getElementById('state');
+    const cityInput = document.getElementById('city');
+    const aboutInput = document.getElementById('about');
+    const hobbiesInput = document.getElementById('hobbies');
+    const prefAgeInput = document.getElementById('prefAge');
+    const prefProfessionInput = document.getElementById('prefProfession');
+    const expectationsInput = document.getElementById('expectations');
+    
+    let isEditMode = false;
+    
+    // Calculate age from date of birth
+    function calculateAge(dob) {
+      const birthDate = new Date(dob);
+      const today = new Date();
+      let age = today.getFullYear() - birthDate.getFullYear();
+      const monthDiff = today.getMonth() - birthDate.getMonth();
+      
+      if (monthDiff < 0 || (monthDiff === 0 && today.getDate() < birthDate.getDate())) {
+        age--;
+      }
+      
+      return age;
+    }
+    
+    // Update age when date of birth changes
+    dobInput.addEventListener('change', function() {
+      if (this.value) {
+        ageInput.value = calculateAge(this.value);
+      }
+    });
+    
+    // Toggle between view and edit modes
+    function toggleEditMode() {
+      isEditMode = !isEditMode;
+      
+      if (isEditMode) {
+        viewProfile.style.display = 'none';
+        editProfile.style.display = 'block';
+        toggleEditBtn.innerHTML = '<i class="fas fa-eye"></i> View Profile';
+        
+        // Load data from view to edit form
+        // In a real app, you would get this from your data storage
+        loadProfileData();
+      } else {
+        viewProfile.style.display = 'block';
+        editProfile.style.display = 'none';
+        toggleEditBtn.innerHTML = '<i class="fas fa-edit"></i> Edit Profile';
+      }
+    }
+    
+    // Load profile data (simulating data from biodata form)
+    function loadProfileData() {
+      // In a real application, you would get this from your database/local storage
+      // For demo purposes, we're using sample data
+      const profileData = {
+        fullName: "Neha Singh",
+        gender: "Female",
+        dob: "1997-05-15",
+        age: "26",
+        maritalStatus: "Never Married",
+        height: "5'3\"",
+        religion: "Hindu",
+        motherTongue: "Hindi",
+        education: "B.Com, CA",
+        profession: "Chartered Accountant",
+        income: "₹20 LPA",
+        country: "India",
+        state: "Maharashtra",
+        city: "Pune",
+        about: "I am a qualified Chartered Accountant working with a reputed firm in Pune. I come from a respectable family and believe in traditional values while being modern in my outlook.",
+        hobbies: "Reading, Traveling, Cooking",
+        prefAge: "25-30",
+        prefProfession: "Professional",
+        expectations: "Looking for someone who is well-educated, family-oriented, and has a stable career."
+      };
+      
+      // Populate edit form
+      fullNameInput.value = profileData.fullName;
+      genderInput.value = profileData.gender;
+      dobInput.value = profileData.dob;
+      ageInput.value = profileData.age;
+      maritalStatusInput.value = profileData.maritalStatus;
+      heightInput.value = profileData.height;
+      religionInput.value = profileData.religion;
+      motherTongueInput.value = profileData.motherTongue;
+      educationInput.value = profileData.education;
+      professionInput.value = profileData.profession;
+      incomeInput.value = profileData.income;
+      countryInput.value = profileData.country;
+      stateInput.value = profileData.state;
+      cityInput.value = profileData.city;
+      aboutInput.value = profileData.about;
+      hobbiesInput.value = profileData.hobbies;
+      prefAgeInput.value = profileData.prefAge;
+      prefProfessionInput.value = profileData.prefProfession;
+      expectationsInput.value = profileData.expectations;
+    }
+    
+    // Update view profile with form data
+    function updateProfileView(formData) {
+      viewFullName.textContent = formData.get('fullName');
+      viewAge.textContent = formData.get('age') + " years";
+      viewLocation.textContent = formData.get('city') + ", " + formData.get('state');
+      viewReligion.textContent = formData.get('religion');
+      viewProfession.textContent = formData.get('profession');
+      viewGender.textContent = formData.get('gender');
+      viewDob.textContent = new Date(formData.get('dob')).toLocaleDateString();
+      viewHeight.textContent = formData.get('height');
+      viewMaritalStatus.textContent = formData.get('maritalStatus');
+      viewMotherTongue.textContent = formData.get('motherTongue');
+      viewEducation.textContent = formData.get('education');
+      viewIncome.textContent = formData.get('income');
+      viewCountry.textContent = formData.get('country');
+      viewState.textContent = formData.get('state');
+      viewCity.textContent = formData.get('city');
+      viewHobbies.textContent = formData.get('hobbies');
+      viewPrefAge.textContent = formData.get('prefAge');
+      viewPrefProfession.textContent = formData.get('prefProfession');
+      viewExpectations.textContent = formData.get('expectations');
+    }
+    
+    // Form submission handler
+    profileForm.addEventListener('submit', function(e) {
+      e.preventDefault();
+      
+      // Get form data
+      const formData = new FormData(this);
+      
+      // Update view profile with new data
+      updateProfileView(formData);
+      
+      // In a real application, you would save this data to your database/local storage
+      alert('Profile updated successfully!');
+      
+      // Switch back to view mode
+      toggleEditMode();
+    });
+    
+    // Initialize event listeners
+    toggleEditBtn.addEventListener('click', toggleEditMode);
+    cancelEditBtn.addEventListener('click', toggleEditMode);
+    
+    // Initialize profile data (simulating data loaded from biodata form)
+    window.addEventListener('DOMContentLoaded', function() {
+      // In a real application, you would load this from your data storage
+      const initialProfileData = {
+        fullName: "Neha Singh",
+        gender: "Female",
+        dob: "1997-05-15",
+        age: "26",
+        maritalStatus: "Never Married",
+        height: "5'3\"",
+        religion: "Hindu",
+        motherTongue: "Hindi",
+        education: "B.Com, CA",
+        profession: "Chartered Accountant",
+        income: "₹20 LPA",
+        country: "India",
+        state: "Maharashtra",
+        city: "Pune",
+        about: "I am a qualified Chartered Accountant working with a reputed firm in Pune. I come from a respectable family and believe in traditional values while being modern in my outlook.",
+        hobbies: "Reading, Traveling, Cooking",
+        prefAge: "25-30",
+        prefProfession: "Professional",
+        expectations: "Looking for someone who is well-educated, family-oriented, and has a stable career."
+      };
+      
+      // Update view with initial data
+      updateProfileView(new Map(Object.entries(initialProfileData)));
+    });
+  </script>
+</body>
+</html>

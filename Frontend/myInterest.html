@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>My Interests | Bandhan.com</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Segoe UI', sans-serif;
+    }
+
+    body {
+      display: flex;
+      min-height: 100vh;
+      background-color: #f8f9fc;
+    }
+
+    .sidebar {
+      width: 250px;
+      background-color: #db2777;
+      color: white;
+      padding: 30px 20px;
+    }
+
+    .sidebar h2 {
+      font-size: 24px;
+      margin-bottom: 40px;
+    }
+
+    .sidebar ul {
+      list-style: none;
+    }
+
+    .sidebar ul li {
+      margin-bottom: 20px;
+      position: relative;
+    }
+
+    .sidebar ul li a {
+      color: white;
+      text-decoration: none;
+      font-weight: 500;
+      display: flex;
+      align-items: center;
+      transition: 0.3s;
+    }
+
+    .sidebar ul li a i {
+      margin-right: 10px;
+      font-size: 18px;
+    }
+
+    .sidebar ul li a:hover {
+      text-decoration: underline;
+    }
+
+    .sidebar ul li.active a {
+      font-weight: 600;
+    }
+
+    .sidebar ul li.active a::before {
+      content: '';
+      position: absolute;
+      left: -20px;
+      width: 4px;
+      height: 100%;
+      background-color: white;
+    }
+
+    .main {
+      flex: 1;
+      padding: 30px;
+    }
+
+    .interests-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 30px;
+    }
+
+    .interests-header h1 {
+      color: #db2777;
+      font-size: 28px;
+    }
+
+    .interests-container {
+      background: white;
+      border-radius: 10px;
+      box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
+      padding: 30px;
+    }
+
+    .interests-tabs {
+      display: flex;
+      border-bottom: 1px solid #eee;
+      margin-bottom: 20px;
+    }
+
+    .interest-tab {
+      padding: 10px 20px;
+      cursor: pointer;
+      font-weight: 500;
+      color: #666;
+      position: relative;
+    }
+
+    .interest-tab.active {
+      color: #db2777;
+    }
+
+    .interest-tab.active::after {
+      content: '';
+      position: absolute;
+      bottom: -1px;
+      left: 0;
+      width: 100%;
+      height: 2px;
+      background-color: #db2777;
+    }
+
+    .interest-tab:hover:not(.active) {
+      color: #333;
+    }
+
+    .interests-content {
+      display: none;
+    }
+
+    .interests-content.active {
+      display: block;
+    }
+
+    .no-interests {
+      text-align: center;
+      padding: 40px;
+      color: #666;
+    }
+
+    .no-interests i {
+      font-size: 50px;
+      color: #db2777;
+      margin-bottom: 20px;
+    }
+
+    .no-interests p {
+      margin-top: 10px;
+    }
+
+    @media (max-width: 768px) {
+      body {
+        flex-direction: column;
+      }
+      .sidebar {
+        width: 100%;
+        padding: 20px;
+      }
+      .sidebar ul {
+        display: flex;
+        justify-content: space-between;
+        flex-wrap: wrap;
+      }
+      .sidebar ul li {
+        margin-bottom: 15px;
+      }
+      .sidebar ul li.active a::before {
+        display: none;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="sidebar">
+    <h2>Bandhan.com</h2>
+    <ul>
+      <li><a href="dashboard.html"><i class="fas fa-home"></i> Dashboard</a></li>
+      <li><a href="index.html"><i class="fas fa-sign-out-alt"></i> Logout</a></li>
+    </ul>
+  </div>
+
+  <div class="main">
+    <div class="interests-header">
+      <h1>My Interests</h1>
+    </div>
+
+    <div class="interests-container">
+      <div class="interests-tabs">
+        <div class="interest-tab active" onclick="showTab('sent')">Sent Interests</div>
+        <div class="interest-tab" onclick="showTab('received')">Received Interests</div>
+      </div>
+
+      <!-- Sent Interests -->
+      <div id="sent-interests" class="interests-content active">
+        <div class="no-interests">
+          <i class="fas fa-paper-plane"></i>
+          <h3>No sent interests yet</h3>
+          <p>When you show interest in profiles from your dashboard, they will appear here</p>
+        </div>
+      </div>
+
+      <!-- Received Interests (Empty) -->
+      <div id="received-interests" class="interests-content">
+        <div class="no-interests">
+          <i class="fas fa-heart"></i>
+          <h3>No received interests yet</h3>
+          <p>When other users show interest in your profile, they will appear here</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    function showTab(tabId) {
+      // Hide all tabs
+      document.querySelectorAll('.interests-content').forEach(tab => {
+        tab.classList.remove('active');
+      });
+      
+      // Deactivate all tab buttons
+      document.querySelectorAll('.interest-tab').forEach(tab => {
+        tab.classList.remove('active');
+      });
+      
+      // Activate selected tab
+      document.getElementById(tabId + '-interests').classList.add('active');
+      
+      // Activate selected tab button
+      event.currentTarget.classList.add('active');
+    }
+    
+    // Initialize with Sent Interests tab active
+    document.addEventListener('DOMContentLoaded', function() {
+      showTab('sent');
+    });
+  </script>
+</body>
+</html>

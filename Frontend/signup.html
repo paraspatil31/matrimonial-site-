@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Join Bandhan.com</title>
+  <style>
+    body {
+      background-image: linear-gradient(rgba(255,255,255,0.7), rgba(255,255,255,0.8)), url('img1.jpg');
+      background-size: cover;
+      background-position: center;
+      font-family: 'Segoe UI', sans-serif;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      margin: 0;
+    }
+
+    .register-container {
+      background-color: #fff;
+      padding: 50px 40px;
+      border-radius: 16px;
+      box-shadow: 0 10px 40px rgba(0, 0, 0, 0.25);
+      width: 100%;
+      max-width: 550px;
+    }
+
+    h2 {
+      text-align: center;
+      color: #db2777;
+      font-size: 30px;
+      margin-bottom: 15px;
+    }
+
+    p.description {
+      text-align: center;
+      color: #666;
+      font-size: 15px;
+      margin-bottom: 35px;
+    }
+
+    .form-group {
+      margin-bottom: 25px;
+    }
+
+    label {
+      display: block;
+      font-weight: 500;
+      margin-bottom: 6px;
+      color: #333;
+    }
+
+    input {
+      width: 100%;
+      padding: 12px;
+      border-radius: 8px;
+      border: 1px solid #bbb;
+      font-size: 15px;
+      transition: border-color 0.3s ease;
+    }
+
+    input:focus {
+      border-color: #db2777;
+      outline: none;
+    }
+
+    .btn {
+      width: 100%;
+      padding: 14px;
+      background-color: #db2777;
+      color: white;
+      border: none;
+      border-radius: 8px;
+      font-size: 16px;
+      font-weight: bold;
+      cursor: pointer;
+      transition: background-color 0.3s;
+    }
+
+    .btn:hover {
+      background-color: #be185d;
+    }
+
+    .login-link {
+      text-align: center;
+      margin-top: 20px;
+      font-size: 14px;
+    }
+
+    .login-link a {
+      color: #db2777;
+      text-decoration: none;
+      font-weight: 500;
+    }
+
+    .login-link a:hover {
+      text-decoration: underline;
+    }
+  </style>
+</head>
+<body>
+  <div class="register-container">
+    <h2>Join Bandhan.com</h2>
+    <p class="description">Create a new account and start your journey to find the perfect match</p>
+    <form id="registerForm">
+      <div class="form-group">
+        <label for="name">Full Name</label>
+        <input type="text" id="name" required placeholder="e.g. Anjali Sharma">
+      </div>
+
+      <div class="form-group">
+        <label for="email">Email Address</label>
+        <input type="email" id="email" required placeholder="e.g. anjali@example.com">
+      </div>
+
+      <div class="form-group">
+        <label for="password">Password</label>
+        <input type="password" id="password" required placeholder="Create a strong password">
+      </div>
+
+      <div class="form-group">
+        <label for="confirmPassword">Confirm Password</label>
+        <input type="password" id="confirmPassword" required placeholder="Re-enter password">
+      </div>
+
+      <button type="submit" class="btn">Sign Up</button>
+    </form>
+
+    <div class="login-link">
+      Already a member? <a href="index.html">Login here</a>
+    </div>
+  </div>
+
+  <script>
+    document.getElementById('registerForm').addEventListener('submit', function(e) {
+      e.preventDefault();
+      const password = document.getElementById('password').value;
+      const confirmPassword = document.getElementById('confirmPassword').value;
+
+      if (password !== confirmPassword) {
+        alert('Passwords do not match!');
+        return;
+      }
+
+      window.location.href = 'biodata.html';
+    });
+  </script>
+</body>
+</html>

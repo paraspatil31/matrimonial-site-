@@ -1,0 +1,717 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>User Dashboard | Bandhan.com</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Segoe UI', sans-serif;
+    }
+
+    body {
+      display: flex;
+      min-height: 100vh;
+      background-color: #f8f9fc;
+    }
+
+    .sidebar {
+      width: 250px;
+      background-color: #db2777;
+      color: white;
+      padding: 30px 20px;
+    }
+
+    .sidebar h2 {
+      font-size: 24px;
+      margin-bottom: 40px;
+    }
+
+    .sidebar ul {
+      list-style: none;
+    }
+
+    .sidebar ul li {
+      margin-bottom: 20px;
+      position: relative;
+    }
+
+    .sidebar ul li a {
+      color: white;
+      text-decoration: none;
+      font-weight: 500;
+      display: flex;
+      align-items: center;
+      transition: 0.3s;
+    }
+
+    .sidebar ul li a i {
+      margin-right: 10px;
+      font-size: 18px;
+    }
+
+    .sidebar ul li a:hover {
+      text-decoration: underline;
+    }
+
+    .sidebar ul li.active a {
+      font-weight: 600;
+    }
+
+    .sidebar ul li.active a::before {
+      content: '';
+      position: absolute;
+      left: -20px;
+      width: 4px;
+      height: 100%;
+      background-color: white;
+    }
+
+    .main {
+      flex: 1;
+      padding: 30px;
+    }
+
+    .filter-bar {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 15px;
+      margin-bottom: 20px;
+      align-items: center;
+      background: white;
+      padding: 15px;
+      border-radius: 8px;
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+    }
+
+    .filter-bar select,
+    .filter-bar input {
+      padding: 10px;
+      border: 1px solid #ddd;
+      border-radius: 6px;
+      font-size: 14px;
+      min-width: 150px;
+    }
+
+    .filter-bar button {
+      background-color: #db2777;
+      color: white;
+      border: none;
+      padding: 10px 20px;
+      border-radius: 6px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s;
+    }
+
+    .filter-bar button:hover {
+      background-color: #be185d;
+      transform: translateY(-2px);
+    }
+
+    .profiles {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 20px;
+    }
+
+    .profile-card {
+      background: white;
+      border-radius: 10px;
+      box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
+      padding: 20px;
+      text-align: center;
+      transition: all 0.3s;
+      cursor: pointer;
+      position: relative;
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    .profile-card.fade-out {
+      animation: fadeOut 0.5s forwards;
+    }
+
+    @keyframes fadeOut {
+      to {
+        opacity: 0;
+        transform: translateY(20px);
+        height: 0;
+        padding: 0;
+        margin: 0;
+        border: none;
+      }
+    }
+
+    .profile-card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 5px 20px rgba(0, 0, 0, 0.15);
+    }
+
+    .profile-card img {
+      width: 100%;
+      height: 200px;
+      object-fit: cover;
+      border-radius: 8px;
+      margin-bottom: 15px;
+      border: 3px solid #f8f9fc;
+    }
+
+    .profile-card h3 {
+      color: #db2777;
+      font-size: 20px;
+      margin-bottom: 6px;
+    }
+
+    .profile-card p {
+      font-size: 14px;
+      color: #555;
+      margin-bottom: 5px;
+    }
+
+    .profile-actions {
+      display: flex;
+      justify-content: center;
+      gap: 10px;
+      margin-top: 15px;
+    }
+
+    .action-btn {
+      padding: 8px 15px;
+      border-radius: 20px;
+      font-size: 13px;
+      font-weight: 500;
+      cursor: pointer;
+      transition: all 0.3s;
+      border: 1px solid #ddd;
+      background-color: white;
+    }
+
+    .interest-btn {
+      background-color: #db2777;
+      color: white;
+      border-color: #db2777;
+    }
+
+    .interest-btn:hover {
+      background-color: #be185d;
+    }
+
+    .dont-show-btn {
+      color: #666;
+    }
+
+    .dont-show-btn:hover {
+      background-color: #f8f9fc;
+    }
+
+    .modal {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: rgba(0, 0, 0, 0.5);
+      display: none;
+      justify-content: center;
+      align-items: center;
+      z-index: 10;
+    }
+
+    .modal-content {
+      background: white;
+      padding: 30px;
+      border-radius: 10px;
+      width: 400px;
+      max-width: 90%;
+      text-align: center;
+      position: relative;
+      box-shadow: 0 5px 30px rgba(0, 0, 0, 0.2);
+    }
+
+    .modal-content img {
+      width: 150px;
+      height: 200px;
+      border-radius: 8px;
+      object-fit: cover;
+      margin-bottom: 15px;
+    }
+
+    .close-btn {
+      position: absolute;
+      top: 15px;
+      right: 15px;
+      font-size: 20px;
+      cursor: pointer;
+      color: #333;
+    }
+
+    .modal-actions {
+      display: flex;
+      justify-content: center;
+      gap: 15px;
+      margin-top: 20px;
+    }
+
+    .modal-btn {
+      padding: 10px 20px;
+      border-radius: 20px;
+      font-size: 14px;
+      font-weight: 500;
+      cursor: pointer;
+      transition: all 0.3s;
+    }
+
+    .modal-interest-btn {
+      background-color: #db2777;
+      color: white;
+      border: none;
+    }
+
+    .modal-dont-show-btn {
+      background-color: white;
+      color: #666;
+      border: 1px solid #ddd;
+    }
+
+    .modal-btn:hover {
+      transform: translateY(-2px);
+    }
+
+    .profile-details {
+      margin-bottom: 15px;
+    }
+
+    .profile-detail {
+      display: flex;
+      justify-content: center;
+      gap: 15px;
+      flex-wrap: wrap;
+      margin-top: 10px;
+    }
+
+    .detail-item {
+      background-color: #f8f9fc;
+      padding: 5px 10px;
+      border-radius: 20px;
+      font-size: 12px;
+      color: #555;
+    }
+
+    .no-results {
+      grid-column: 1/-1;
+      text-align: center;
+      padding: 40px;
+      background: white;
+      border-radius: 8px;
+      box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
+    }
+
+    .reset-btn {
+      margin-top: 15px;
+      background-color: #db2777;
+      color: white;
+      border: none;
+      padding: 8px 20px;
+      border-radius: 5px;
+      cursor: pointer;
+      transition: all 0.3s;
+    }
+
+    .reset-btn:hover {
+      background-color: #be185d;
+    }
+
+    @media (max-width: 768px) {
+      body {
+        flex-direction: column;
+      }
+      .sidebar {
+        width: 100%;
+        padding: 20px;
+      }
+      .sidebar ul {
+        display: flex;
+        justify-content: space-between;
+        flex-wrap: wrap;
+      }
+      .sidebar ul li {
+        margin-bottom: 15px;
+      }
+      .sidebar ul li.active a::before {
+        display: none;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="sidebar">
+    <h2>Bandhan.com</h2>
+    <ul>
+      <li class="active"><a href="myprofile.html"><i class="fas fa-user"></i> View Profile</a></li>
+      <li><a href="potentialmatches.html"><i class="fas fa-search"></i> Potential Matches</a></li>
+      <li><a href="myInterest.html"><i class="fas fa-heart"></i>My Interests</a></li>
+      <li><a href="logout.html"><i class="fas fa-sign-out-alt"></i> Logout</a></li>
+    </ul>
+  </div>
+
+  <div class="main">
+    <div class="filter-bar">
+      <input type="number" id="minAge" placeholder="Min Age" min="18" max="80" />
+      <input type="number" id="maxAge" placeholder="Max Age" min="18" max="80" />
+      <select id="caste">
+        <option value="">All Castes</option>
+        <option value="Agri">Agri</option>
+        <option value="Koli">Koli</option>
+        <option value="Brahman">Brahman</option>
+        <option value="Bhandari">Bhandari</option>
+        <option value="Mali">Mali</option>
+        <option value="Burud">Burud</option>
+      </select>
+      <input type="text" id="city" placeholder="City" />
+      <button onclick="applyFilters()"><i class="fas fa-search"></i> Search</button>
+      <button onclick="resetFilters()" class="reset-btn"><i class="fas fa-sync-alt"></i> Reset</button>
+    </div>
+
+    <div class="profiles" id="profileList"></div>
+  </div>
+
+  <div class="modal" id="modal">
+    <div class="modal-content" id="modalContent">
+      <span class="close-btn" onclick="closeModal()">&times;</span>
+    </div>
+  </div>
+
+  <script>
+    const profiles = [
+      { 
+        id: 1,
+        name: "Anjali Sawant", 
+        age: 28, 
+        city: "Kolhapur", 
+        caste: "Brahman",
+        education: "Masters in Computer Science",
+        profession: "Software Engineer",
+        income: "₹12 LPA",
+        height: "5'4\"",
+        img: "https://images.pexels.com/photos/1580271/pexels-photo-1580271.jpeg"
+      },
+      { 
+        id: 2,
+        name: "Advait Raut", 
+        age: 30, 
+        city: "Mumbai", 
+        caste: "Mali",
+        education: "MBA",
+        profession: "Marketing Manager",
+        income: "₹18 LPA",
+        height: "5'10\"",
+        img: "https://images.pexels.com/photos/938639/pexels-photo-938639.jpeg"
+      },
+      { 
+        id: 3,
+        name: "Sneha Bapat", 
+        age: 27, 
+        city: "Jalgaon", 
+        caste: "Brahman",
+        education: "B.Tech",
+        profession: "Data Scientist",
+        income: "₹15 LPA",
+        height: "5'5\"",
+        img: "https://images.pexels.com/photos/4623816/pexels-photo-4623816.jpeg"
+      },
+      { 
+        id: 4,
+        name: "Chinmay Joshi", 
+        age: 29, 
+        city: "Thane", 
+        caste: "Agri",
+        education: "MBBS",
+        profession: "Doctor",
+        income: "₹25 LPA",
+        height: "5'11\"",
+        img: "https://images.pexels.com/photos/1121796/pexels-photo-1121796.jpeg"
+      },
+      { 
+        id: 5,
+        name: "Neha Chavan", 
+        age: 26, 
+        city: "Pune", 
+        caste: "Bhandari",
+        education: "B.Com",
+        profession: "Chartered Accountant",
+        income: "₹20 LPA",
+        height: "5'3\"",
+        img: "https://images.pexels.com/photos/5500474/pexels-photo-5500474.jpeg"
+      },
+      { 
+        id: 6,
+        name: "Aditya Mhatre", 
+        age: 31, 
+        city: "Solapur", 
+        caste: "Koli",
+        education: "Ph.D",
+        profession: "Professor",
+        income: "₹22 LPA",
+        height: "5'9\"",
+        img: "https://images.pexels.com/photos/2379004/pexels-photo-2379004.jpeg"
+      },
+      { 
+        id: 7,
+        name: "Priya Deshmukh", 
+        age: 25, 
+        city: "Nagpur", 
+        caste: "Brahman",
+        education: "B.Arch",
+        profession: "Architect",
+        income: "₹14 LPA",
+        height: "5'6\"",
+        img: "https://images.pexels.com/photos/774909/pexels-photo-774909.jpeg"
+      },
+      { 
+        id: 8,
+        name: "Rahul More", 
+        age: 32, 
+        city: "Nashik", 
+        caste: "Agri",
+        education: "B.E. Mechanical",
+        profession: "Automobile Engineer",
+        income: "₹16 LPA",
+        height: "5'8\"",
+        img: "https://images.pexels.com/photos/1222271/pexels-photo-1222271.jpeg"
+      },
+      { 
+        id: 9,
+        name: "Tanvi Patil", 
+        age: 24, 
+        city: "Satara", 
+        caste: "Bhandari",
+        education: "B.Sc Nursing",
+        profession: "Nurse",
+        income: "₹8 LPA",
+        height: "5'2\"",
+        img: "https://images.pexels.com/photos/415829/pexels-photo-415829.jpeg"
+      },
+      { 
+        id: 10,
+        name: "Vikram Nair", 
+        age: 33, 
+        city: "Mumbai", 
+        caste: "Brahman",
+        education: "CA",
+        profession: "Finance Manager",
+        income: "₹30 LPA",
+        height: "5'7\"",
+        img: "https://images.pexels.com/photos/220453/pexels-photo-220453.jpeg"
+      },
+      { 
+        id: 11,
+        name: "Meera Kulkarni", 
+        age: 29, 
+        city: "Pune", 
+        caste: "Koli",
+        education: "M.Sc Biotechnology",
+        profession: "Research Scientist",
+        income: "₹15 LPA",
+        height: "5'5\"",
+        img: "https://images.pexels.com/photos/712521/pexels-photo-712521.jpeg"
+      },
+      { 
+        id: 12,
+        name: "Siddharth Rao", 
+        age: 35, 
+        city: "Thane", 
+        caste: "Burud",
+        education: "B.E. Civil",
+        profession: "Construction Manager",
+        income: "₹28 LPA",
+        height: "5'10\"",
+        img: "https://images.pexels.com/photos/1043471/pexels-photo-1043471.jpeg"
+      },
+	  {
+		id: 13,
+        name: "Kamini Talekar", 
+        age: 30, 
+        city: "Thane", 
+        caste: "Agri",
+        education: "BSc Physics",
+        profession: "Professoe",
+        income: "₹10 LPA",
+        height: "5'4\"",
+        img:"https://images.pexels.com/photos/7742829/pexels-photo-7742829.jpeg"
+	  },
+    ];
+
+    const profileList = document.getElementById('profileList');
+    let hiddenProfiles = [];
+
+    function renderProfiles(filteredProfiles) {
+      profileList.innerHTML = '';
+      
+      if (filteredProfiles.length === 0) {
+        profileList.innerHTML = `
+          <div class="no-results">
+            <h3>No profiles found matching your criteria</h3>
+            <p>Try adjusting your filters or resetting them to see all profiles</p>
+            <button onclick="resetFilters()" class="reset-btn">
+              <i class="fas fa-sync-alt"></i> Reset Filters
+            </button>
+          </div>
+        `;
+        return;
+      }
+
+      const visibleProfiles = filteredProfiles.filter(profile => !hiddenProfiles.includes(profile.id));
+      
+      if (visibleProfiles.length === 0) {
+        profileList.innerHTML = `
+          <div class="no-results">
+            <h3>You've hidden all matching profiles</h3>
+            <p>Try resetting your filters or unhiding profiles</p>
+            <button onclick="resetHiddenProfiles()" class="reset-btn">
+              <i class="fas fa-eye"></i> Show Hidden Profiles
+            </button>
+          </div>
+        `;
+        return;
+      }
+
+      visibleProfiles.forEach(profile => {
+        const card = document.createElement('div');
+        card.className = 'profile-card';
+        card.dataset.id = profile.id;
+        card.innerHTML = `
+          <img src="${profile.img}" alt="Profile Picture">
+          <h3>${profile.name}</h3>
+          <p>Age: ${profile.age} | Height: ${profile.height}</p>
+          <p>${profile.profession} | ${profile.city}</p>
+          <div class="profile-actions">
+            <button class="action-btn interest-btn" onclick="handleInterest(event, ${profile.id})">
+              <i class="fas fa-heart"></i> Interest
+            </button>
+            <button class="action-btn dont-show-btn" onclick="handleDontShow(event, ${profile.id})">
+              <i class="fas fa-eye-slash"></i> Don't Show
+            </button>
+          </div>
+        `;
+        card.onclick = (e) => {
+          if (!e.target.classList.contains('action-btn')) {
+            openModal(profile);
+          }
+        };
+        profileList.appendChild(card);
+      });
+    }
+
+    function openModal(profile) {
+      const modal = document.getElementById('modal');
+      const modalContent = document.getElementById('modalContent');
+      modalContent.innerHTML = `
+        <span class="close-btn" onclick="closeModal()">&times;</span>
+        <img src="${profile.img}" alt="${profile.name}" />
+        <h3>${profile.name}</h3>
+        <div class="profile-details">
+          <p>Age: ${profile.age} | Height: ${profile.height}</p>
+          <p>Caste: ${profile.caste}</p>
+          <p>Profession: ${profile.profession}</p>
+          <p>Income: ${profile.income}</p>
+          <p>Education: ${profile.education}</p>
+          <p>Location: ${profile.city}</p>
+        </div>
+        <div class="profile-detail">
+          <span class="detail-item">${profile.caste}</span>
+          <span class="detail-item">${profile.profession}</span>
+          <span class="detail-item">${profile.city}</span>
+        </div>
+        <div class="modal-actions">
+          <button class="modal-btn modal-interest-btn" onclick="handleInterestModal('${profile.name}', ${profile.id})">
+            <i class="fas fa-heart"></i> Show Interest
+          </button>
+          <button class="modal-btn modal-dont-show-btn" onclick="handleDontShowModal(${profile.id})">
+            <i class="fas fa-eye-slash"></i> Don't Show
+          </button>
+        </div>
+      `;
+      modal.style.display = 'flex';
+    }
+
+    function closeModal() {
+      document.getElementById('modal').style.display = 'none';
+    }
+
+    function applyFilters() {
+      const minAge = parseInt(document.getElementById('minAge').value) || 18;
+      const maxAge = parseInt(document.getElementById('maxAge').value) || 80;
+      const caste = document.getElementById('caste').value.toLowerCase();
+      const city = document.getElementById('city').value.toLowerCase().trim();
+
+      // Validate age range
+      if (minAge > maxAge) {
+        alert("Minimum age cannot be greater than maximum age");
+        return;
+      }
+
+      const filtered = profiles.filter(profile => {
+        const matchesAge = profile.age >= minAge && profile.age <= maxAge;
+        const matchesCaste = caste === '' || profile.caste.toLowerCase() === caste;
+        const matchesCity = city === '' || profile.city.toLowerCase().includes(city);
+        
+        return matchesAge && matchesCaste && matchesCity;
+      });
+
+      renderProfiles(filtered);
+    }
+
+    function resetFilters() {
+      document.getElementById('minAge').value = '';
+      document.getElementById('maxAge').value = '';
+      document.getElementById('caste').value = '';
+      document.getElementById('city').value = '';
+      renderProfiles(profiles);
+    }
+
+    function resetHiddenProfiles() {
+      hiddenProfiles = [];
+      renderProfiles(profiles);
+    }
+
+    function handleInterest(e, profileId) {
+      e.stopPropagation();
+      const profile = profiles.find(p => p.id === profileId);
+      alert(`Interest sent to ${profile.name}!`);
+      // In a real app, you would make an API call here
+    }
+
+    function handleDontShow(e, profileId) {
+      e.stopPropagation();
+      const card = document.querySelector(`.profile-card[data-id="${profileId}"]`);
+      if (card) {
+        card.classList.add('fade-out');
+        setTimeout(() => {
+          hiddenProfiles.push(profileId);
+          renderProfiles(profiles);
+        }, 500);
+      }
+    }
+
+    function handleInterestModal(name, profileId) {
+      closeModal();
+      alert(`Interest sent to ${name}!`);
+      // In a real app, you would make an API call here
+    }
+
+    function handleDontShowModal(profileId) {
+      closeModal();
+      hiddenProfiles.push(profileId);
+      renderProfiles(profiles);
+    }
+
+    // Initialize
+    renderProfiles(profiles);
+  </script>
+</body>
+</html>
